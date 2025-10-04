@@ -1,9 +1,15 @@
 import Footer from "@/components/shared/Footer";
 import { Button } from "@/components/ui/button";
+import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
+  const valid = await isAuthenticated();
+  const user = await getCurrentUser();
+  if (valid || user) redirect("/dashboard");
+
   return (
     <div className="flex flex-col gap-36 my-24">
       <section className="flex flex-col items-center justify-center gap-4">
@@ -201,10 +207,17 @@ export default async function Home() {
           </div>
         </div>
       </section>
-    
+
       <section className="flex flex-col items-center justify-center gap-8">
         <h2 className="text-2xl font-bold">Why SubTrack?</h2>
-        <Image src="https://placehold.co/1280x720" alt="Placeholder" unoptimized width={1280} height={720} className="rounded-md w-[80%] h-auto" />
+        <Image
+          src="https://placehold.co/1280x720"
+          alt="Placeholder"
+          unoptimized
+          width={1280}
+          height={720}
+          className="rounded-md w-[80%] h-auto"
+        />
         <h1 className="text-4xl font-bold">
           Stay <span className="text-primary font-italic">organized,</span> save{" "}
           <span className="text-primary">money.</span>

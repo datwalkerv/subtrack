@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -25,11 +25,21 @@ const loginSchema = z.object({
 
 type LoginData = z.infer<typeof loginSchema>;
 
-import { signIn } from "@/lib/auth/auth-client";
+import { signIn, useSession } from "@/lib/auth/auth-client";
+import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  const session = useSession();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+      router.refresh();
+    }
+  }, [session, router]);
 
   const {
     register,

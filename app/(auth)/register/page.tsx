@@ -1,10 +1,10 @@
 "use client"
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signUp } from "@/lib/auth/auth-client";
+import { signUp, useSession } from "@/lib/auth/auth-client";
 import * as z from "zod";
 import { toast } from "sonner";
 
@@ -31,6 +31,15 @@ type RegisterData = z.infer<typeof registerSchema>;
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  const session = useSession();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+      router.refresh();
+    }
+  }, [session, router]);
 
   const {
     register,
