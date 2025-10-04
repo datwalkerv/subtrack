@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -26,7 +26,6 @@ const loginSchema = z.object({
 type LoginData = z.infer<typeof loginSchema>;
 
 import { signIn, useSession } from "@/lib/auth/auth-client";
-import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 
 export default function LoginPage() {
   const router = useRouter();
