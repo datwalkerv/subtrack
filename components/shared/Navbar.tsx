@@ -32,17 +32,25 @@ export default function Navbar() {
       </Link>
       {session ? (
         <>
-          <Button onClick={() => {
-            signOut()
-            toast.success("Signed out")
-            router.push("/")
-            router.refresh()
-          }}>Sign Out</Button>
+          <Button
+            onClick={() => {
+              signOut();
+              toast.success("Signed out");
+              router.push("/");
+              router.refresh();
+            }}
+          >
+            Sign Out
+          </Button>
         </>
       ) : (
         <div className="flex gap-2">
-          <Link href="/login"><Button>Sign In</Button></Link>
-          <Link href="/register"><Button variant="outline">Sign Up</Button></Link>
+          <Link href="/login">
+            <Button>Sign In</Button>
+          </Link>
+          <Link href="/register">
+            <Button variant="outline">Sign Up</Button>
+          </Link>
         </div>
       )}
     </nav>
