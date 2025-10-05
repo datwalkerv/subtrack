@@ -31,15 +31,6 @@ export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const session = useSession();
-
-  useEffect(() => {
-    if (session) {
-      router.push("/dashboard");
-      router.refresh();
-    }
-  }, [session, router]);
-
   const {
     register,
     handleSubmit,
