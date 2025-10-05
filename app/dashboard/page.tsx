@@ -1,34 +1,25 @@
+import DashboardHeader from "@/components/shared/Header";
 import SpendingByCategoryChart from "@/components/shared/pieChart";
 import EuroTrendChart from "@/components/shared/trendChart";
 import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Month } from "react-day-picker";
 
 export default async function Dashboard() {
   const valid = await isAuthenticated();
   const user = await getCurrentUser();
   if (!valid || !user) redirect("/login");
 
-  return (
-    <div className="flex flex-col my-12 w-[80%] items-center gap-6">
-      <section className="flex justify-between items-center w-full mb-4">
-        <h1 className="text-3xl font-bold">
-          Welcome, {(await getCurrentUser())?.name || "User"}!
-        </h1>
-        <div className="text-white/50 flex gap-4">
-          <Link href="/dashboard" className="text-white">
-            Dashboard
-          </Link>
-          <Link href="/subscriptions">Subscriptions</Link>
-          <Link href="/calendar">Calendar</Link>
-          <Link href="/settings">Settings</Link>
-        </div>
-      </section>
+  const name = user?.name || "User";
 
-      <section className="flex flex-wrap w-full justify-between items-center gap-4">
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
-          <svg
+  return (
+    <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
+      <DashboardHeader name={user?.name} />
+      
+      {/* Top Summary Cards */}
+      <section className="flex flex-wrap w-full justify-between gap-4">
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
+         <svg
             width="131"
             height="155"
             viewBox="0 0 131 155"
@@ -53,13 +44,13 @@ export default async function Dashboard() {
             />
           </svg>
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">Active subscriptions</div>
-            <div className="text-xl font-extrabold">0</div>
+            <div className="font-medium text-white/80">Active subscriptions</div>
+            <div className="text-xl font-bold text-white">0</div>
             <div className="text-sm text-white/50">0 added this month</div>
           </div>
         </div>
 
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
           <svg
             width="157"
             height="148"
@@ -111,16 +102,15 @@ export default async function Dashboard() {
               </clipPath>
             </defs>
           </svg>
-
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">Remaining this month</div>
-            <div className="text-xl font-extrabold">$0.00</div>
+            <div className="font-medium text-white/80">Remaining this month</div>
+            <div className="text-xl font-bold text-white">$0.00</div>
             <div className="text-sm text-white/50">Next month: $0.00</div>
           </div>
         </div>
 
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
-          <svg
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
+           <svg
             width="164"
             height="147"
             viewBox="0 0 164 147"
@@ -171,15 +161,14 @@ export default async function Dashboard() {
               </clipPath>
             </defs>
           </svg>
-
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">Yearly Cost</div>
-            <div className="text-xl font-extrabold">$0.00</div>
+            <div className="font-medium text-white/80">Yearly Cost</div>
+            <div className="text-xl font-bold text-white">$0.00</div>
             <div className="text-sm text-white/50">$0.00/month</div>
           </div>
         </div>
 
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
           <svg
             width="129"
             height="105"
@@ -216,53 +205,58 @@ export default async function Dashboard() {
               </clipPath>
             </defs>
           </svg>
-
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">Renewals in 30 Days</div>
-            <div className="text-xl font-extrabold">0</div>
+            <div className="font-medium text-white/80">Renewals in 30 Days</div>
+            <div className="text-xl font-bold text-white">0</div>
             <div className="text-sm text-white/50">$0.00</div>
           </div>
         </div>
       </section>
 
-      <section className="flex w-full flex-col gap-2 bg-white/5 p-4 rounded-md">
-        <div className="text-lg font-bold text-white/80">Upcoming renewals</div>
-        <div className="flex items-center justify-between group hover:bg-white/5 p-2 rounded-md">
+      {/* Upcoming Renewals */}
+      <section className="flex flex-col w-full bg-white/5 border border-white/10 p-4 rounded-2xl shadow-sm gap-2">
+        <div className="text-lg font-semibold text-white/80">
+          Upcoming renewals
+        </div>
+        <div className="flex items-center justify-between hover:bg-white/5 p-2 rounded-lg transition-colors">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <div className="font-bold">subscription 1</div>
+            <div className="font-medium text-white">subscription 1</div>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-sm text-white/50">30 days</div>
-            <div className="font-bold">$0.00</div>
+            <div className="font-semibold text-white">$0.00</div>
           </div>
         </div>
       </section>
 
-      <section className="flex w-full justify-between gap-4 rounded-md">
-        <div className="w-1/2 bg-white/5 p-4 rounded-md">
-          <div className="text-lg font-bold text-white/80 mb-4">
+      {/* Charts */}
+      <section className="flex w-full justify-between gap-4">
+        <div className="w-1/2 bg-white/5 border border-white/10 p-4 rounded-2xl shadow-sm">
+          <div className="text-lg font-semibold text-white/80 mb-4">
             Spending by Category
           </div>
           <SpendingByCategoryChart />
         </div>
-        <div className="w-1/2 bg-white/5 p-4 rounded-md">
-          <div className="text-lg font-bold text-white/80 mb-4">
+        <div className="w-1/2 bg-white/5 border border-white/10 p-4 rounded-2xl shadow-sm">
+          <div className="text-lg font-semibold text-white/80 mb-4">
             Spending by Payment Method
           </div>
           <SpendingByCategoryChart />
         </div>
       </section>
 
-      <section className="flex w-full flex-col gap-2 bg-white/5 p-4 rounded-md">
-        <div className="text-lg font-bold text-white/80">
+      {/* Monthly Trend */}
+      <section className="flex flex-col w-full bg-white/5 border border-white/10 p-4 rounded-2xl shadow-sm gap-2">
+        <div className="text-lg font-semibold text-white/80">
           Monthly Spending Trend
         </div>
         <EuroTrendChart />
       </section>
 
-      <section className="flex flex-wrap w-full justify-between items-center gap-4">
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
+      {/* Bottom Summary Cards */}
+      <section className="flex flex-wrap w-full justify-between gap-4">
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
           <svg
             width="72"
             height="104"
@@ -294,15 +288,14 @@ export default async function Dashboard() {
               </clipPath>
             </defs>
           </svg>
-
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">Paused subscriptions</div>
-            <div className="text-xl font-extrabold">0</div>
+            <div className="font-medium text-white/80">Paused subscriptions</div>
+            <div className="text-xl font-bold text-white">0</div>
             <div className="text-sm text-white/50">0 cancelled</div>
           </div>
         </div>
 
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
           <svg
             width="149"
             height="153"
@@ -315,7 +308,7 @@ export default async function Dashboard() {
               <path
                 d="M58.5772 57.7152C55.833 57.1967 53.0763 56.7308 50.3446 56.1466C47.1443 55.4946 44.1214 54.1622 41.4808 52.24C39.1836 50.5493 37.5533 48.3807 37.5684 45.506C37.5947 40.4699 37.8723 35.4339 38.1289 30.4017C38.2261 28.4983 38.6251 26.6153 38.7668 24.7139C38.8955 22.5188 39.4791 20.3743 40.4806 18.4168C41.4821 16.4593 42.8797 14.7315 44.5846 13.3428C46.5484 11.6961 48.6251 10.0027 50.9387 8.98739C60.5081 4.78683 70.2273 1.11721 80.9801 1.36596C88.1657 1.53267 95.3625 1.35749 102.45 2.80603C107.931 3.9264 112.915 6.13686 117.06 9.98102C120.665 13.3231 122.808 17.3543 122.95 22.3897C123.055 26.0757 123.379 29.7552 123.601 33.3644C127.382 34.2445 131.018 34.874 134.504 35.9793C136.844 36.7299 139.048 37.8529 141.03 39.3049C144.029 41.5141 145.024 44.8871 145.171 48.5055C145.442 55.2323 145.63 61.9637 145.965 68.6876C146.407 77.5416 147.117 86.3851 147.421 95.243C147.767 105.339 147.896 115.446 147.894 125.547C147.894 128.536 147.073 131.52 146.73 134.515C146.402 137.385 144.522 138.762 142.088 139.717C136.561 141.919 130.797 143.471 124.913 144.345C110.767 146.319 96.4028 146.13 82.3138 143.783C79.2369 143.29 76.2394 142.299 72.9459 141.471C72.4641 141.865 71.7645 142.409 71.095 142.988C64.1231 149.009 55.9681 152.018 46.8339 152.616C36.3929 153.299 26.4815 151.454 17.2646 146.414C9.17388 141.989 3.64035 135.465 1.70941 126.309C-2.93287 104.301 11.1606 81.8485 32.9379 76.3116C34.6345 75.8804 36.175 74.8428 37.8703 74.4004C40.0015 73.8451 42.2639 73.1435 44.3858 73.3502C47.4706 73.6541 50.4898 74.6918 53.5253 75.4617C54.7921 75.7826 56.0286 76.2191 57.487 76.6667C57.8512 70.3048 58.2044 64.1867 58.5772 57.7152ZM43.5943 145.074C45.1826 144.889 47.7803 144.78 50.2934 144.262C61.9631 141.855 69.9838 135.446 72.707 123.395C73.7624 118.789 73.8766 114.017 73.0417 109.365C71.2171 99.0925 65.9701 91.3037 56.5798 86.5518C53.5876 85.0376 50.4589 83.7762 47.3308 82.5567C43.943 81.2598 40.2177 81.1403 36.7539 82.2174C24.2691 85.8148 15.3573 93.3095 11.3294 105.92C10.2577 109.11 9.55048 112.411 9.22114 115.759C8.24713 127.791 12.6013 135.624 23.0634 140.593C29.2448 143.529 35.7891 144.856 43.5943 145.073V145.074ZM74.9202 33.3035C82.8382 32.5204 90.3526 32.0445 97.7725 30.9366C101.863 30.2964 105.847 29.0927 109.608 27.3596C114.105 25.3053 114.588 21.5379 111.408 17.7383C110.811 16.9209 110.068 16.2212 109.216 15.6748C106.565 14.2565 103.952 12.5244 101.098 11.7775C90.7576 9.05446 79.9831 8.39117 69.3879 9.82546C63.5634 10.6078 57.9674 12.2002 52.9215 15.346C50.1301 17.0873 47.5809 19.1219 46.1757 22.2093C44.8879 25.0381 45.5193 27.3484 48.2812 28.7609C50.3524 29.8782 52.5933 30.6472 54.9141 31.0371C61.6797 31.9789 68.49 32.5997 74.9202 33.3027V33.3035ZM115.538 34.5609C111.378 35.7889 107.686 37.1174 103.885 37.9542C93.9677 40.1372 83.8798 40.4758 73.7683 40.1969C63.7779 39.9212 53.8259 39.3523 44.561 34.815V46.526C47.3452 48.457 49.4586 49.423 53.6644 49.9055C60.2317 50.6589 66.8183 51.3612 73.4165 51.711C85.0842 52.3462 96.7782 51.0659 108.032 47.9208C110.799 47.1482 113.561 46.23 115.54 44.7415L115.538 34.5609ZM139.007 79.2159C133.685 81.5998 129.117 84.0282 124.292 85.732C112.514 89.8913 100.28 89.9129 88.0233 88.8424C83.1368 88.4152 78.2885 87.5508 73.5182 86.8984C74.9287 89.1627 76.5452 91.4474 77.8284 93.9061C79.1115 96.3647 80.0711 99.013 81.2807 101.831C82.5626 102.024 83.9816 102.349 85.4157 102.435C98.6553 103.252 111.939 101.89 124.738 98.4053C128.923 97.2685 132.905 95.3697 136.953 93.7512C137.975 93.3416 139.017 92.8015 139.012 91.3884C138.997 87.3795 139.007 83.3712 139.007 79.2153V79.2159ZM66.3156 77.879C68.7532 78.6489 71.2611 79.6852 73.8713 80.2234C85.8876 82.6906 98.2372 83.0864 110.387 81.3943C119.459 80.1597 127.611 76.4915 135.006 71.1489C135.947 70.4689 137.172 69.508 137.316 68.5314C137.657 66.239 137.425 63.8618 137.425 61.4701C137.126 61.5175 136.836 61.6135 136.568 61.7543C130.469 66.3001 123.458 68.4704 116.078 69.7561C105.207 71.5683 94.1463 71.9575 83.1756 70.9146C77.6958 70.4394 72.2508 69.5802 67.1097 67.4314C66.4534 67.1583 65.7791 66.9404 64.7913 66.5788C65.3144 70.4354 65.7738 73.8497 66.3156 77.8783V77.879ZM77.2941 136.003C88.022 139.778 126.426 139.865 140.463 130.555C140.156 127.489 139.84 124.342 139.516 121.115C120.45 128.32 101.014 129.126 81.2755 127.041C79.9116 130.108 78.6029 133.055 77.2941 136.002V136.003ZM139.021 102.337C121.035 108.857 101.747 110.962 82.7785 108.475V119.56C83.0863 119.77 83.1756 119.883 83.2721 119.889C85.1761 120.008 87.0795 120.12 88.9822 120.223C101.669 120.914 114.388 119.72 126.726 116.679C131.037 115.665 135.178 114.029 139.019 111.822L139.021 102.337ZM124.039 41.8581C123.828 42.1817 123.579 42.3924 123.607 42.5486C124.363 46.4997 122.042 48.8081 119.262 50.9536C115.603 53.7759 111.315 55.08 106.938 56.0828C94.2086 58.9141 81.1121 59.7211 68.131 58.4739C67.1951 58.3919 66.2453 58.4635 65.3027 58.4635C65.964 59.5102 66.9443 60.3166 68.0988 60.7639C70.2923 61.6105 72.556 62.2648 74.8631 62.7191C88.5215 64.9283 102.465 64.6626 116.03 61.9348C121.107 60.9457 126.097 59.3915 130.179 56.0383C131.968 54.5365 133.487 52.7382 134.667 50.7219C135.897 48.6393 135.253 46.828 133.269 45.4936C130.494 43.6224 127.344 42.3815 124.039 41.8581Z"
                 fill="white"
-                fill-opacity="0.8"
+                fillOpacity="0.8"
               />
               <path
                 d="M42.2467 99.8165V112.156C44.045 112.834 45.7253 113.393 47.3497 114.092C53.7306 116.839 55.3006 122.833 51.1171 128.347C49.3942 130.618 48.0323 131.537 42.9509 133.871C42.4718 136.308 41.9887 138.71 41.5299 141.117C41.2746 142.457 40.6346 143.495 39.171 143.529C37.6266 143.565 37.0839 142.306 36.8083 141.096C36.2917 138.821 35.9399 136.506 35.4713 133.941C33.6027 133.443 31.5687 132.915 29.5439 132.352C28.5634 132.121 27.6036 131.81 26.6744 131.422C24.8229 130.559 24.0779 129.114 24.4323 127.373C24.7605 125.759 26.148 124.738 28.2844 124.879C30.6118 125.031 32.924 125.426 35.1838 125.708C36.1276 123.106 36.2339 121.557 35.8243 117.126C34.2491 116.535 32.546 116.014 30.9432 115.275C24.4586 112.284 23.0298 105.807 27.6248 100.33C29.5216 97.9446 32.0208 96.1088 34.8642 95.0127C36.5982 94.384 37.2926 93.3279 37.3583 91.5296C37.374 90.3002 37.6421 89.0873 38.1459 87.9663C38.3622 87.6046 38.6623 87.3008 39.021 87.0802C39.3796 86.8597 39.7861 86.7284 40.2061 86.6982C40.6126 86.8138 40.9859 87.0244 41.2948 87.3126C41.6037 87.6014 41.8393 87.9597 41.9822 88.3575C42.2635 89.7916 42.4172 91.248 42.4416 92.7096C43.987 93.0614 45.5133 93.492 47.0143 94.0007C49.4093 94.9432 50.5428 96.8013 50.2507 98.9186C49.9921 100.793 48.9728 101.426 47.2243 100.657C45.6937 99.9845 44.2682 98.9882 42.2467 99.8165ZM36.3344 102.263C33.0527 104.21 31.3725 106.281 31.9789 107.824C32.7009 109.667 34.3844 110.132 36.3344 110.385V102.263ZM42.4672 125.387C44.6482 124.582 46.6468 123.619 46.5811 121.409C46.526 119.556 44.4841 119.178 42.8242 118.926C42.7291 118.911 42.6187 118.996 42.1993 119.153C42.1993 120.443 42.1764 121.856 42.2098 123.267C42.2249 123.884 42.355 124.499 42.4672 125.387Z"
@@ -334,17 +327,16 @@ export default async function Dashboard() {
               </clipPath>
             </defs>
           </svg>
-
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">
+            <div className="font-medium text-white/80">
               Most expensive (Yearly)
             </div>
-            <div className="text-xl font-extrabold">subscription 1</div>
+            <div className="text-xl font-bold text-white">subscription 1</div>
             <div className="text-sm text-white/50">$2,808.00/year</div>
           </div>
         </div>
 
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
           <svg
             width="161"
             height="155"
@@ -357,7 +349,7 @@ export default async function Dashboard() {
               <path
                 d="M158.715 93.6772C157.802 100.245 154.818 106.136 151.805 111.92C146.72 121.822 139.589 130.529 130.887 137.462C120.603 145.626 108.844 150.515 95.9904 152.771C88.0228 154.17 79.9963 155.188 71.859 154.774C52.2411 153.776 35.307 146.909 21.5437 132.492C15.7041 126.273 10.7406 119.285 6.79072 111.721C4.50991 107.47 3.65356 103.024 2.8853 98.4666C1.46538 90.0357 0.591533 81.6125 1.52498 72.9954C2.67737 62.3531 5.61243 52.3786 10.9177 43.1078C17.3494 31.654 26.1617 21.7158 36.7593 13.9646C47.3128 6.30798 59.2571 2.38546 72.1621 0.825729C85.8424 -0.937555 99.7449 0.512547 112.769 5.06085C125.547 9.5513 136.951 16.4031 144.663 27.8945C152.375 39.3859 157.726 51.7955 159.542 65.8408C161.05 77.4943 159.507 87.9798 158.715 93.6772ZM151.262 76.3042C151.197 68.1236 150.427 60.0325 147.463 52.4251C145.02 46.1571 142.117 36.608 137.175 31.6597C130.308 22.099 120.75 16.2616 109.925 12.4034C97.5833 7.91381 84.3234 6.55027 71.3271 8.43433C58.0477 10.352 46.1501 15.2312 36.1452 24.3003C33.1929 26.9822 30.3803 29.8139 27.7183 32.7848C16.4134 45.378 10.3178 60.4191 10.3243 85.1613C10.3282 100.587 17.9305 113.773 28.8189 125.043C40.3765 137.006 54.3094 143.003 70.6049 144.343C78.5187 144.991 86.3198 144.129 94.1022 142.926C117.373 139.33 133.983 126.736 144.693 105.822C151.148 93.2167 150.872 80.9374 151.262 76.3042Z"
                 fill="white"
-                fill-opacity="0.8"
+                fillOpacity="0.8"
               />
               <path
                 d="M87.7202 74.8117C89.3144 74.8117 90.5102 74.8117 91.706 74.8117C101.785 74.8253 111.863 74.8221 121.941 74.8766C123.26 74.8869 124.572 75.0575 125.85 75.3844C126.511 75.5219 127.105 75.885 127.529 76.4117C127.953 76.9383 128.182 77.5965 128.176 78.273C128.242 78.9481 128.077 79.6258 127.708 80.1952C127.339 80.764 126.787 81.1907 126.144 81.4041C124.474 81.9586 122.728 82.2511 120.968 82.2705C111.113 82.1823 101.259 81.9592 91.4048 81.7874C89.3008 81.7504 87.1942 81.7951 85.0935 81.6881C83.9942 81.6505 82.9066 81.454 81.8637 81.1045C80.2158 80.5143 79.5479 79.2516 79.6716 77.448C79.9308 73.6956 80.1115 69.9367 80.2495 66.1778C80.6977 53.9944 81.0987 41.8091 81.5593 29.6257C81.6635 28.4129 81.8559 27.2091 82.1351 26.0243C82.4389 24.3977 83.3886 23.4548 85.0916 23.458C86.8535 23.4613 87.6619 24.6112 87.9664 26.145C88.2145 27.337 88.346 28.5505 88.3589 29.7683C88.3473 42.8479 88.3065 55.9277 88.2365 69.008C88.2268 70.7623 87.9327 72.5153 87.7202 74.8117Z"
@@ -376,15 +368,14 @@ export default async function Dashboard() {
               </clipPath>
             </defs>
           </svg>
-
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">Oldest Subscription</div>
-            <div className="text-xl font-extrabold">subscription 1</div>
+            <div className="font-medium text-white/80">Oldest Subscription</div>
+            <div className="text-xl font-bold text-white">subscription 1</div>
             <div className="text-sm text-white/50">Since Oct 5, 2025</div>
           </div>
         </div>
 
-        <div className="flex gap-4 p-4 rounded-md shadow-lg bg-white/5 items-center min-w-[250px]">
+        <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
           <svg
             width="146"
             height="148"
@@ -411,10 +402,9 @@ export default async function Dashboard() {
               </clipPath>
             </defs>
           </svg>
-
           <div className="flex flex-col">
-            <div className="font-bold text-white/80">Latest Subscription</div>
-            <div className="text-xl font-extrabold">subscription 2</div>
+            <div className="font-medium text-white/80">Latest Subscription</div>
+            <div className="text-xl font-bold text-white">subscription 2</div>
             <div className="text-sm text-white/50">Added Oct 5, 2025</div>
           </div>
         </div>
