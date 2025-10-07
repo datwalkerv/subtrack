@@ -18,6 +18,7 @@ export async function createSubscription(formData: FormData) {
     const rawData = {
       subscription: formData.get("subscription"),
       cost: formData.get("cost"),
+      currency: formData.get("currency"),
       billingInterval: formData.get("billingInterval"),
       billingPeriod: formData.get("billingPeriod"),
       nextPaymentDate: formData.get("nextPaymentDate"),

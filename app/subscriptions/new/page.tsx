@@ -96,9 +96,15 @@ export default function AddSubscriptionPage() {
               </SelectTrigger>
               <SelectContent className="bg-[#1a1a1a] border-white/10 text-white">
                 <SelectItem value="none">None</SelectItem>
-                <SelectItem value="banking">Banking</SelectItem>
+                <SelectItem value="software">Software</SelectItem>
                 <SelectItem value="entertainment">Entertainment</SelectItem>
-                <SelectItem value="utilities">Utilities</SelectItem>
+                <SelectItem value="personalcare">Personal Care</SelectItem>
+                <SelectItem value="food">Food</SelectItem>
+                <SelectItem value="lifestyle">Lifestyle</SelectItem>
+                <SelectItem value="health">Health</SelectItem>
+                <SelectItem value="gaming">Gaming</SelectItem>
+                <SelectItem value="education">Education</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -129,8 +135,12 @@ export default function AddSubscriptionPage() {
                   </SelectTrigger>
                   <SelectContent className="bg-[#1a1a1a] border-white/10 text-white">
                     <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="credit">Credit Card</SelectItem>
-                    <SelectItem value="paypal">PayPal</SelectItem>
+                    <SelectItem value="cash">Cash</SelectItem>
+                    <SelectItem value="revolut">Revolut</SelectItem>
+                    <SelectItem value="wise">Wise</SelectItem>
+                    <SelectItem value="otp">OTP</SelectItem>
+                    <SelectItem value="bcr">BCR</SelectItem>
+                    <SelectItem value="btpay">BT Pay</SelectItem>
                     <SelectItem value="bank">Bank Transfer</SelectItem>
                   </SelectContent>
                 </Select>

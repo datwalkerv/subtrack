@@ -7,6 +7,8 @@ import {
   notAuthenticatedObject,
 } from "@/lib/auth/auth-functions";
 import { settingsSchema } from "@/lib/validation/settingSchema";
+import { set } from "better-auth";
+import { create } from "domain";
 
 export async function getSettings() {
   try {
@@ -24,6 +26,37 @@ export async function getSettings() {
   } catch (error) {
     console.error("Error fetching settings:", error);
     return { success: false, error: "Failed to fetch settings" };
+  }
+}
+
+export async function createSettings() {
+  try {
+    const valid = await isAuthenticated();
+    const user = await getCurrentUser();
+    if (!valid || !user) return notAuthenticatedObject;
+    
+    const existingSettings = await db
+      .collection("settings")
+      .findOne({ userId: user.id });
+
+    if (existingSettings) {
+      return { success: true, data: existingSettings };
+    }
+
+    const now = new Date();
+    const defaultSettings = {
+      userId: user.id,
+      timezone: "Europe/Budapest",
+      currency: "HUF",
+      createdAt: now,
+      updatedAt: now,
+    };
+    
+    await db.collection("settings").insertOne(defaultSettings);
+    return { success: true, data: defaultSettings };
+  } catch (error) {
+    console.error("Error creating settings:", error);
+    return { success: false, error: "Failed to create settings" };
   }
 }
 
