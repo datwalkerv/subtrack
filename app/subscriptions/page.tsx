@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import DashboardHeader from "@/components/shared/Header";
+import Link from "next/link";
 
 export default function SubscriptionsPage() {
   const [search, setSearch] = useState("");
@@ -51,10 +52,10 @@ export default function SubscriptionsPage() {
             A list of all your active subscriptions.
           </p>
         </div>
-        <Button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg">
+        <Link href="/subscriptions/new"><Button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg">
           <Plus className="w-4 h-4" />
           Add Subscription
-        </Button>
+        </Button></Link>
       </div>
 
       {/* Filters */}
