@@ -20,3 +20,5 @@ export const auth = betterAuth({
   },
   plugins: [admin()],
 });
+
+export {client, db}
