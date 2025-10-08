@@ -29,7 +29,7 @@ export async function getSettings() {
   }
 }
 
-export async function createSettings() {
+export async function checkSettings() {
   try {
     const valid = await isAuthenticated();
     const user = await getCurrentUser();
@@ -39,24 +39,14 @@ export async function createSettings() {
       .collection("settings")
       .findOne({ userId: user.id });
 
-    if (existingSettings) {
-      return { success: true, data: existingSettings };
+    if (!existingSettings) {
+      return { success: false, data: existingSettings };
     }
 
-    const now = new Date();
-    const defaultSettings = {
-      userId: user.id,
-      timezone: "Europe/Budapest",
-      currency: "HUF",
-      createdAt: now,
-      updatedAt: now,
-    };
-    
-    await db.collection("settings").insertOne(defaultSettings);
-    return { success: true, data: defaultSettings };
+    return { success: true, data: existingSettings };
   } catch (error) {
-    console.error("Error creating settings:", error);
-    return { success: false, error: "Failed to create settings" };
+    console.error("Error checking settings:", error);
+    return { success: false, error: "Failed to check settings" };
   }
 }
 

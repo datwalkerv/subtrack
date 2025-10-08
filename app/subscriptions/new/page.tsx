@@ -20,7 +20,7 @@ export default function AddSubscriptionPage() {
 
   return (
     <div className="p-8 flex flex-col gap-6 mx-auto mt-0 mb-auto w-full max-w-3xl">
-      <DashboardHeader name="Balint" />
+      <DashboardHeader/>
 
       {/* Page Header */}
       <div>

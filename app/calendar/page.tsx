@@ -54,7 +54,7 @@ export default function SubscriptionCalendar() {
 
   return (
     <div className="p-8 flex flex-col gap-6 mx-auto mt-0 mb-auto w-full max-w-5xl">
-      <DashboardHeader name="Balint" />
+      <DashboardHeader />
 
       <div>
         <h1 className="text-2xl font-semibold text-white">

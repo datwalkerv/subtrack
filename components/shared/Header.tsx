@@ -3,27 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface DashboardHeaderProps {
-  name?: string;
-}
-
-export default function DashboardHeader({ name = "User" }: DashboardHeaderProps) {
+export default function DashboardHeader() {
   const pathname = usePathname();
 
   const links = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/subscriptions", label: "Subscriptions" },
     { href: "/calendar", label: "Calendar" },
-    { href: "/settings", label: "Settings" },
   ];
 
   return (
     <header className="flex justify-between items-center w-full mb-6">
       <div>
         <h1 className="text-2xl font-semibold text-white">
-          Welcome, {name}!
+          Welcome!
         </h1>
-        <p className="text-sm text-white/50">Here’s your current overview.</p>
+        <p className="text-sm text-white/50">Here's your current overview.</p>
       </div>
 
       <nav className="flex gap-4 text-sm">

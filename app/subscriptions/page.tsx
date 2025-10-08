@@ -42,7 +42,7 @@ export default function SubscriptionsPage() {
 
   return (
     <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
-      <DashboardHeader name="Balint" />
+      <DashboardHeader />
 
       {/* Page Header */}
       <div className="flex justify-between items-center w-full">

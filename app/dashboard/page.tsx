@@ -1,3 +1,4 @@
+import { checkSettings } from "@/actions/settingsActions";
 import DashboardHeader from "@/components/shared/Header";
 import SpendingByCategoryChart from "@/components/shared/pieChart";
 import EuroTrendChart from "@/components/shared/trendChart";
@@ -12,9 +13,12 @@ export default async function Dashboard() {
 
   const name = user?.name || "User";
 
+  const settings = await checkSettings();
+  if (!settings.success) redirect("/onboarding");
+
   return (
     <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
-      <DashboardHeader name={user?.name} />
+      <DashboardHeader />
       
       {/* Top Summary Cards */}
       <section className="flex flex-wrap w-full justify-between gap-4">
