@@ -10,9 +10,9 @@ export const subscriptionSchema = z.object({
   category: z.string().optional(),
   paymentMethod: z.string().optional(),
   startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
-  url: z.string().url().optional().or(z.literal("")),
-  notes: z.string().optional(),
+  endDate: z.coerce.date().optional().nullable(),
+  url: z.string().url().optional().or(z.literal("")).nullable(),
+  notes: z.string().optional().nullable(),
   status: z.enum(["active", "inactive"]).default("active"),
 });
 

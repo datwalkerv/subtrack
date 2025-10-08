@@ -41,16 +41,20 @@ export async function createSubscription(formData: FormData) {
       updatedAt: now,
     };
 
-    await db.collection("subscriptions").insertOne(subscriptionData);
-
-    return { success: true, data: subscriptionData };
+    try{
+      const sub = await db.collection("subscriptions").insertOne(subscriptionData);
+      return { success: true };
+    } catch(err) {
+      return { success: false, error: "Database insertion error" };
+    }
+    return { success: false };
   } catch (error) {
     console.error("Error creating subscription:", error);
     return { success: false, error: "Failed to create subscription" };
   }
 }
 
-export async function getSubscriptions(formData: FormData) {
+export async function getSubscriptions() {
   try {
     const valid = await isAuthenticated();
     const user = await getCurrentUser();

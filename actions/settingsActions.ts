@@ -14,7 +14,7 @@ export async function getSettings() {
   try {
     const valid = await isAuthenticated();
     const user = await getCurrentUser();
-    if (!valid || !user) return notAuthenticatedObject;
+    if (!valid || !user) return { success: false, error: "Failed to fetch settings", setting: null };
 
     const settings = await db
       .collection("settings")
@@ -22,10 +22,10 @@ export async function getSettings() {
 
     const parsedSettings = settingsSchema.parse(settings || {});
 
-    return { success: true, settings: parsedSettings };
+    return { success: true, setting: parsedSettings };
   } catch (error) {
     console.error("Error fetching settings:", error);
-    return { success: false, error: "Failed to fetch settings" };
+    return { success: false, error: "Failed to fetch settings", setting: null };
   }
 }
 

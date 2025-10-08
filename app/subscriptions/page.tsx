@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,36 +12,82 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pause, Trash2, Loader2 } from "lucide-react";
 import DashboardHeader from "@/components/shared/Header";
 import Link from "next/link";
+import {
+  getSubscriptions,
+  deleteSubscription,
+} from "@/actions/subscriptionsActions";
+import { toast } from "sonner";
+
+type Subscription = {
+  _id: string;
+  subscription: string;
+  category: string;
+  cost: number;
+  currency: string;
+  billingInterval?: string;
+  billingPeriod?: string;
+  nextPaymentDate?: string;
+  paymentMethod?: string;
+  status: string;
+  createdAt: string;
+};
 
 export default function SubscriptionsPage() {
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
 
-  const [subscriptions, setSubscriptions] = useState([
-    {
-      id: 1,
-      name: "tiktask",
-      category: "Banking/Credit Cards",
-      cost: 234.0,
-      billing: "Monthly",
-      nextBill: "Nov 4, 2025",
-      daysRemaining: 30,
-      status: "Active",
-    },
-  ]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
-  const handleDelete = (id: number) => {
-    setSubscriptions((subs) => subs.filter((sub) => sub.id !== id));
+  useEffect(() => {
+    async function loadSubscriptions() {
+      setLoading(true);
+      try {
+        const res = await getSubscriptions();
+        if (res.success) {
+          setSubscriptions((res.data as unknown as Subscription[]) ?? []);
+        } else {
+          toast.error("Failed to fetch subscriptions");
+        }
+      } catch (err) {
+        toast.error("Something went wrong loading subscriptions");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadSubscriptions();
+  }, []);
+
+  const handleDelete = (id: string) => {
+    startTransition(async () => {
+      const res = await deleteSubscription(id);
+      if (res.success) {
+        setSubscriptions((subs) => subs.filter((s) => s._id !== id));
+        toast.success("Subscription deleted");
+      } else {
+        toast.error("Failed to delete subscription");
+      }
+    });
   };
 
   const filtered = subscriptions.filter((sub) =>
-    sub.name.toLowerCase().includes(search.toLowerCase())
+    sub.subscription.toLowerCase().includes(search.toLowerCase())
   );
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-white">
+        <Loader2 className="animate-spin w-8 h-8 mb-4" />
+        <p>Loading subscriptions...</p>
+      </div>
+    );
+  }
   return (
-    <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
+    <div className="flex flex-col p-8 my-12 gap-4 mx-auto mt-0 mb-auto">
       <DashboardHeader />
 
       {/* Page Header */}
@@ -52,10 +98,12 @@ export default function SubscriptionsPage() {
             A list of all your active subscriptions.
           </p>
         </div>
-        <Link href="/subscriptions/new"><Button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg">
-          <Plus className="w-4 h-4" />
-          Add Subscription
-        </Button></Link>
+        <Link href="/subscriptions/new">
+          <Button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg">
+            <Plus className="w-4 h-4" />
+            Add Subscription
+          </Button>
+        </Link>
       </div>
 
       {/* Filters */}
@@ -109,48 +157,62 @@ export default function SubscriptionsPage() {
           {filtered.length} subscription{filtered.length !== 1 && "s"}
         </p>
         <p className="text-base font-semibold text-white/80">
-          €{filtered.reduce((acc, sub) => acc + sub.cost, 0).toFixed(2)}
+          {filtered.reduce((acc, sub) => acc + sub.cost, 0).toFixed(2)}{" "}{filtered[0]?.currency ?? ""}
         </p>
       </div>
 
       {/* Subscription list */}
-      {filtered.map((sub) => (
-        <Card key={sub.id} className="p-4 bg-white/5 border border-white/10 rounded-2xl shadow-sm">
+      {filtered.length === 0 ? (
+        <div className="text-center text-white/50 mt-12">
+          No subscriptions found.
+        </div>
+      ) : (
+        filtered.map((sub) => (
+        <Card
+          key={sub._id}
+          className="p-4 bg-white/5 border border-white/10 rounded-2xl shadow-sm"
+        >
           <CardContent className="flex items-center justify-between p-0">
             <div className="flex items-center gap-4">
               <div className="h-10 w-1.5 rounded bg-purple-600" />
               <div>
-                <h3 className="font-medium">{sub.name}</h3>
-                <p className="text-sm text-muted-foreground">{sub.category}</p>
+                <h3 className="font-medium">{sub.subscription}</h3>
+                <p className="text-sm text-muted-foreground">{sub.category || "Uncategorized"}</p>
               </div>
             </div>
             <div className="flex items-center gap-12 text-sm">
               <div className="min-w-[80px] text-right">
-                <p className="font-medium">€{sub.cost.toFixed(2)}</p>
+                <p className="font-medium">{sub.cost.toFixed(2)} {sub.currency}</p>
               </div>
-              <div className="min-w-[80px] text-right">{sub.billing}</div>
+              <div className="min-w-[80px] text-right">{sub.billingPeriod || "-"}</div>
               <div className="min-w-[140px] text-right">
-                <p>{sub.nextBill}</p>
-                <p className="text-xs text-muted-foreground">
-                  {sub.daysRemaining} days from now
-                </p>
+                <p>{sub.nextPaymentDate
+                      ? new Date(sub.nextPaymentDate).toLocaleDateString()
+                      : "—"}</p>
               </div>
               <div className="min-w-[80px] text-right">
-                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+                <Badge className={
+                      sub.status === "active"
+                        ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
+                        : "bg-gray-200 text-gray-700"
+                    }>
                   {sub.status}
                 </Badge>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground">
-                <Pencil className="w-4 h-4 cursor-pointer hover:text-primary" />
+                {/*<Pause className="w-4 h-4 cursor-pointer hover:text-primary" /> */}
                 <Trash2
-                  className="w-4 h-4 cursor-pointer hover:text-red-600"
-                  onClick={() => handleDelete(sub.id)}
+                  className={`w-4 h-4 cursor-pointer hover:text-red-600 ${
+                      isPending ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                  onClick={() => handleDelete(sub._id)}
                 />
               </div>
             </div>
           </CardContent>
         </Card>
-      ))}
+      ))
+      )}
     </div>
   );
 }

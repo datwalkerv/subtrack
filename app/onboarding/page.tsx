@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getSettings, updateSettings } from "@/actions/settingsActions";
+import { updateSettings } from "@/actions/settingsActions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
