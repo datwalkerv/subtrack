@@ -7,6 +7,7 @@ import {
   notAuthenticatedObject,
 } from "@/lib/auth/auth-functions";
 import { subscriptionSchema } from "@/lib/validation/subscriptionSchema";
+import { Currency } from "lucide-react";
 import { ObjectId } from "mongodb";
 
 export async function createSubscription(formData: FormData) {
@@ -77,6 +78,8 @@ export async function getSubscriptions() {
         : null,
       startDate: sub.startDate ? new Date(sub.startDate).toISOString() : null,
       endDate: sub.endDate ? new Date(sub.endDate).toISOString() : null,
+      cost: sub.cost ? parseFloat(sub.cost) : null,
+      currency: sub.currency || "HUF",
     }));
 
     return { success: true, data: plainSubscriptions };

@@ -1,9 +1,9 @@
 import { checkSettings } from "@/actions/settingsActions";
+import { getSubscriptions } from "@/actions/subscriptionsActions";
 import DashboardHeader from "@/components/shared/Header";
 import SpendingByCategoryChart from "@/components/shared/pieChart";
 import EuroTrendChart from "@/components/shared/trendChart";
 import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
@@ -16,14 +16,79 @@ export default async function Dashboard() {
   const settings = await checkSettings();
   if (!settings.success) redirect("/onboarding");
 
+  const response = await getSubscriptions();
+
+  if (!response.success) {
+    console.error("Failed to fetch subscriptions:");
+    return;
+  }
+
+  const subscriptions = response.data;
+
+  if (subscriptions == null || subscriptions == undefined) {
+    console.error("No subscriptions data received");
+    return;
+  }
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const nextMonthDate = new Date(currentYear, currentMonth + 1, 1);
+  const nextMonth = nextMonthDate.getMonth();
+  const nextMonthYear = nextMonthDate.getFullYear();
+
+  const activeCount = subscriptions.filter((sub) => {
+    const endDate = sub.endDate ? new Date(sub.endDate) : null;
+    return !endDate || endDate > now;
+  }).length;
+
+  const addedThisMonthCount = subscriptions.filter((sub) => {
+    const createdAt = new Date(sub.createdAt);
+    return (
+      createdAt.getMonth() === currentMonth &&
+      createdAt.getFullYear() === currentYear
+    );
+  }).length;
+
+  const remainingThisMonth = subscriptions.reduce((sum, sub) => {
+    if (!sub.nextPaymentDate || !sub.cost) return sum;
+    const nextPayment = new Date(sub.nextPaymentDate);
+    if (
+      nextPayment >= now &&
+      nextPayment.getMonth() === currentMonth &&
+      nextPayment.getFullYear() === currentYear
+    ) {
+      return sum + sub.cost;
+    }
+    return sum;
+  }, 0);
+
+  const remainingNextMonth = subscriptions.reduce((sum, sub) => {
+      if (!sub.nextPaymentDate || !sub.cost) return sum;
+      const nextPayment = new Date(sub.nextPaymentDate);
+      if (
+        nextPayment.getMonth() === nextMonth &&
+        nextPayment.getFullYear() === nextMonthYear
+      ) {
+        return sum + sub.cost;
+      }
+      return sum;
+    }, 0);
+
+  const currency = subscriptions[0]?.currency || "HUF";
+
+  console.log("Active Subscriptions:", activeCount);
+  console.log("Added This Month:", addedThisMonthCount);
+
   return (
     <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
       <DashboardHeader />
-      
+
       {/* Top Summary Cards */}
       <section className="flex flex-wrap w-full justify-between gap-4">
         <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
-         <svg
+          <svg
             width="131"
             height="155"
             viewBox="0 0 131 155"
@@ -48,9 +113,13 @@ export default async function Dashboard() {
             />
           </svg>
           <div className="flex flex-col">
-            <div className="font-medium text-white/80">Active subscriptions</div>
-            <div className="text-xl font-bold text-white">0</div>
-            <div className="text-sm text-white/50">0 added this month</div>
+            <div className="font-medium text-white/80">
+              Active subscriptions
+            </div>
+            <div className="text-xl font-bold text-white">{activeCount}</div>
+            <div className="text-sm text-white/50">
+              {addedThisMonthCount} added this month
+            </div>
           </div>
         </div>
 
@@ -107,14 +176,20 @@ export default async function Dashboard() {
             </defs>
           </svg>
           <div className="flex flex-col">
-            <div className="font-medium text-white/80">Remaining this month</div>
-            <div className="text-xl font-bold text-white">$0.00</div>
-            <div className="text-sm text-white/50">Next month: $0.00</div>
+            <div className="font-medium text-white/80">
+              Remaining this month
+            </div>
+            <div className="text-xl font-bold text-white">
+              {remainingThisMonth}{currency}
+            </div>
+            <div className="text-sm text-white/50">
+              Next month: {remainingNextMonth}{currency}
+            </div>
           </div>
         </div>
 
         <div className="flex gap-4 p-4 rounded-2xl shadow-sm bg-white/5 border border-white/10 items-center min-w-[250px] flex-1">
-           <svg
+          <svg
             width="164"
             height="147"
             viewBox="0 0 164 147"
@@ -293,7 +368,9 @@ export default async function Dashboard() {
             </defs>
           </svg>
           <div className="flex flex-col">
-            <div className="font-medium text-white/80">Paused subscriptions</div>
+            <div className="font-medium text-white/80">
+              Paused subscriptions
+            </div>
             <div className="text-xl font-bold text-white">0</div>
             <div className="text-sm text-white/50">0 cancelled</div>
           </div>
