@@ -66,7 +66,20 @@ export async function getSubscriptions() {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return { success: true, data: subscriptions };
+     const plainSubscriptions = subscriptions.map((sub) => ({
+      ...sub,
+      _id: sub._id.toString(),
+      userId: sub.userId?.toString?.() ?? sub.userId,
+      createdAt: sub.createdAt?.toISOString?.() ?? sub.createdAt,
+      updatedAt: sub.updatedAt?.toISOString?.() ?? sub.updatedAt,
+      nextPaymentDate: sub.nextPaymentDate
+        ? new Date(sub.nextPaymentDate).toISOString()
+        : null,
+      startDate: sub.startDate ? new Date(sub.startDate).toISOString() : null,
+      endDate: sub.endDate ? new Date(sub.endDate).toISOString() : null,
+    }));
+
+    return { success: true, data: plainSubscriptions };
   } catch (error) {
     console.error("Error fetching subscriptions:", error);
     return { success: false, error: "Failed to fetch subscriptions" };
