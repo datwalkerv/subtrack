@@ -152,3 +152,64 @@ export async function deleteSubscription(id: string) {
     return { success: false, error: "Failed to delete subscription" };
   }
 }
+
+export async function updateExpiredSubscriptions() {
+  try {
+    const valid = await isAuthenticated();
+    const user = await getCurrentUser();
+    if (!valid || !user) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const today = new Date();
+
+    const subs = await db
+      .collection("subscriptions")
+      .find({ userId: user.id })
+      .toArray();
+
+    let updatedCount = 0;
+
+    for (const s of subs) {
+      const nextPayment = s.nextPaymentDate
+        ? new Date(s.nextPaymentDate)
+        : null;
+      const endDate = s.endDate ? new Date(s.endDate) : null;
+
+      if (!nextPayment) continue;
+
+      if (endDate && endDate < today) continue;
+
+      if (nextPayment < today) {
+        const newNextPayment = new Date(
+          nextPayment.getFullYear(),
+          nextPayment.getMonth() + 1,
+          nextPayment.getDate()
+        );
+
+        await db.collection("subscriptions").updateOne(
+          { _id: new ObjectId(s._id), userId: user.id },
+          {
+            $set: {
+              nextPaymentDate: newNextPayment,
+              updatedAt: new Date(),
+            },
+          }
+        );
+        updatedCount++;
+      }
+    }
+
+    return {
+      success: true,
+      updatedCount,
+      message:
+        updatedCount > 0
+          ? `✅ ${updatedCount} subscription date(s) updated`
+          : "No expired subscriptions found",
+    };
+  } catch (err) {
+    console.error("Error updating expired subscriptions:", err);
+    return { success: false, error: "Server error" };
+  }
+}
