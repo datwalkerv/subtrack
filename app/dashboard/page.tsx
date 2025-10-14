@@ -94,14 +94,21 @@ export default async function Dashboard() {
   const in30DaysDate = new Date(today);
   in30DaysDate.setDate(in30DaysDate.getDate() + 30);
 
+  const normalizeDate = (d: Date) =>
+    new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  const todayMid = normalizeDate(today);
+  const in30DaysMid = normalizeDate(in30DaysDate);
+
   const renewalsIn30Days = subscriptions.reduce((count, sub) => {
     if (!sub.nextPaymentDate) return count;
-    const nextPayment = new Date(sub.nextPaymentDate);
-    const endDate = sub.endDate ? new Date(sub.endDate) : null;
+
+    const nextPayment = normalizeDate(new Date(sub.nextPaymentDate));
+    const endDate = sub.endDate ? normalizeDate(new Date(sub.endDate)) : null;
 
     if (
-      nextPayment >= today &&
-      nextPayment <= in30DaysDate &&
+      nextPayment >= todayMid &&
+      nextPayment <= in30DaysMid &&
       (!endDate || endDate >= nextPayment)
     ) {
       return count + 1;
@@ -111,12 +118,13 @@ export default async function Dashboard() {
 
   const renewalsIn30DaysCost = subscriptions.reduce((sum, sub) => {
     if (!sub.nextPaymentDate || !sub.cost) return sum;
-    const nextPayment = new Date(sub.nextPaymentDate);
-    const endDate = sub.endDate ? new Date(sub.endDate) : null;
+
+    const nextPayment = normalizeDate(new Date(sub.nextPaymentDate));
+    const endDate = sub.endDate ? normalizeDate(new Date(sub.endDate)) : null;
 
     if (
-      nextPayment >= today &&
-      nextPayment <= in30DaysDate &&
+      nextPayment >= todayMid &&
+      nextPayment <= in30DaysMid &&
       (!endDate || endDate >= nextPayment)
     ) {
       return sum + Number(sub.cost || 0);
@@ -168,6 +176,15 @@ export default async function Dashboard() {
       d.setDate(0);
     }
     return d;
+  }
+
+  function formatNumber(value: number | string): string {
+    if (value == null || isNaN(Number(value))) return "0";
+
+    // Round to nearest integer and format with dots
+    return Math.round(Number(value))
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
   return (
@@ -269,11 +286,11 @@ export default async function Dashboard() {
               Remaining this month
             </div>
             <div className="text-xl font-bold text-white">
-              {remainingThisMonth}
+              {formatNumber(remainingThisMonth)}
               {currency}
             </div>
             <div className="text-sm text-white/50">
-              Next month: {remainingNextMonth}
+              Next month: {formatNumber(remainingNextMonth)}
               {currency}
             </div>
           </div>
@@ -333,8 +350,14 @@ export default async function Dashboard() {
           </svg>
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Yearly Cost</div>
-            <div className="text-xl font-bold text-white">{yearlyCost.toFixed(2)}{currency}</div>
-            <div className="text-sm text-white/50">AVG: {(yearlyCost/12).toFixed(2)}{currency}/month</div>
+            <div className="text-xl font-bold text-white">
+              {formatNumber(yearlyCost)}
+              {currency}
+            </div>
+            <div className="text-sm text-white/50">
+              AVG: {formatNumber(yearlyCost / 12)}
+              {currency}/month
+            </div>
           </div>
         </div>
 
@@ -377,8 +400,13 @@ export default async function Dashboard() {
           </svg>
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Renewals in 30 Days</div>
-            <div className="text-xl font-bold text-white">{renewalsIn30Days}</div>
-            <div className="text-sm text-white/50">{renewalsIn30DaysCost.toFixed(2)}{currency}</div>
+            <div className="text-xl font-bold text-white">
+              {renewalsIn30Days}
+            </div>
+            <div className="text-sm text-white/50">
+              {formatNumber(renewalsIn30DaysCost)}
+              {currency}
+            </div>
           </div>
         </div>
       </section>
