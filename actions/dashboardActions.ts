@@ -86,7 +86,7 @@ export async function getDashboardStats() {
   const todayMid = normalizeDate(today);
   const in30DaysMid = normalizeDate(in30DaysDate);
 
-   const renewalsIn30DaysList = subscriptions.filter((sub) => {
+  const renewalsIn30DaysList = subscriptions.filter((sub) => {
     if (!sub.nextPaymentDate) return false;
     const nextPayment = normalizeDate(new Date(sub.nextPaymentDate));
     const endDate = sub.endDate ? normalizeDate(new Date(sub.endDate)) : null;
@@ -153,6 +153,29 @@ export async function getDashboardStats() {
     ([name, value]) => ({ name, value })
   );
 
+  const nonZeroCostSubs = subscriptions.filter((sub) => Number(sub.cost) > 0);
+  const mostCheapSub = nonZeroCostSubs.reduce(
+    (min, sub) => (Number(sub.cost) < Number(min.cost) ? sub : min),
+    nonZeroCostSubs[0] || null
+  );
+
+  const mostExpensiveSub = subscriptions.reduce(
+    (max, sub) => (Number(sub.cost) > Number(max.cost) ? sub : max),
+    subscriptions[0] || null
+  );
+
+  const oldestSub = subscriptions.reduce(
+    (oldest, sub) =>
+      new Date(sub.createdAt) < new Date(oldest.createdAt) ? sub : oldest,
+    subscriptions[0] || null
+  );
+
+  const latestSub = subscriptions.reduce(
+    (latest, sub) =>
+      new Date(sub.createdAt) > new Date(latest.createdAt) ? sub : latest,
+    subscriptions[0] || null
+  );
+
   const currency = subscriptions[0]?.currency || "HUF";
 
   return {
@@ -167,5 +190,9 @@ export async function getDashboardStats() {
     renewalsIn30DaysList,
     spendingByCategory,
     spendingByPaymentMethod,
+    mostCheapSub,
+    mostExpensiveSub,
+    oldestSub,
+    latestSub,
   };
 }

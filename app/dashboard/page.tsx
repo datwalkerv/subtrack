@@ -30,6 +30,14 @@ export default async function Dashboard() {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
+  function formatYMD(dateStr: Date) {
+    const date = new Date(dateStr);
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}.${String(date.getDate()).padStart(2, "0")}`;
+  }
+
   return (
     <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
       <DashboardHeader />
@@ -374,8 +382,13 @@ export default async function Dashboard() {
 
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Most cheap (yearly)</div>
-            <div className="text-xl font-bold text-white">sub 2</div>
-            <div className="text-sm text-white/50">$200/year</div>
+            <div className="text-xl font-bold text-white">
+              {stats.mostCheapSub.name}
+            </div>
+            <div className="text-sm text-white/50">
+              {formatNumber((stats.mostCheapSub.cost || 0) * 12)}
+              {stats.currency}/year
+            </div>
           </div>
         </div>
 
@@ -415,8 +428,13 @@ export default async function Dashboard() {
             <div className="font-medium text-white/80">
               Most expensive (Yearly)
             </div>
-            <div className="text-xl font-bold text-white">subscription 1</div>
-            <div className="text-sm text-white/50">$2,808.00/year</div>
+            <div className="text-xl font-bold text-white">
+              {stats.mostExpensiveSub.name}
+            </div>
+            <div className="text-sm text-white/50">
+              {formatNumber((stats.mostExpensiveSub.cost || 0) * 12)}
+              {stats.currency}/year
+            </div>
           </div>
         </div>
 
@@ -454,8 +472,12 @@ export default async function Dashboard() {
           </svg>
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Oldest Subscription</div>
-            <div className="text-xl font-bold text-white">subscription 1</div>
-            <div className="text-sm text-white/50">Since Oct 5, 2025</div>
+            <div className="text-xl font-bold text-white">
+              {stats.oldestSub.name}
+            </div>
+            <div className="text-sm text-white/50">
+              Since {formatYMD(stats.oldestSub.createdAt)}
+            </div>
           </div>
         </div>
 
@@ -488,8 +510,12 @@ export default async function Dashboard() {
           </svg>
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Latest Subscription</div>
-            <div className="text-xl font-bold text-white">subscription 2</div>
-            <div className="text-sm text-white/50">Added Oct 5, 2025</div>
+            <div className="text-xl font-bold text-white">
+              {stats.latestSub.name}
+            </div>
+            <div className="text-sm text-white/50">
+              Added {formatYMD(stats.latestSub.createdAt)}
+            </div>
           </div>
         </div>
       </section>

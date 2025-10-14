@@ -129,9 +129,9 @@ export default function MonthlySpendingTrend() {
           <Line
             type="monotone"
             dataKey="value"
-            stroke="#a68bff"
+            stroke="#86EAD4"
             strokeWidth={2}
-            dot={{ r: 3, fill: "#a68bff", stroke: "#a68bff" }}
+            dot={{ r: 3, fill: "#86EAD4", stroke: "#86EAD4" }}
             activeDot={{ r: 5 }}
           />
         </LineChart>
