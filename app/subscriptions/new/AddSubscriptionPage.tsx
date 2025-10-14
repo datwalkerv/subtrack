@@ -110,33 +110,6 @@ export default function AddSubscriptionPage({settings}: {settings: any}) {
             />
           </div>
 
-          {/* Period */}
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-white/70">Billing Period</label>
-            <div className="flex gap-2 items-center">
-              <Input
-                type="number"
-                className="w-20 bg-white/5 border-white/10 text-white"
-                value={billingInterval}
-                onChange={(e) => setBillingInterval(e.target.value)}
-              />
-              <div className="flex gap-2">
-                {["Day", "Week", "Month", "Year"].map((period) => (
-                  <Button
-                    key={period}
-                    type="button"
-                    className={`px-4 bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 ${
-                      period === "Month" && "bg-white/20 text-white"
-                    }`}
-                    onClick={() => setBillingPeriod(period)}
-                  >
-                    {period}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </div>
-
           {/* Next Payment Date */}
           <div className="flex flex-col gap-1">
             <label className="text-sm text-white/70">Next Payment Date</label>

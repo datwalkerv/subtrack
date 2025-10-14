@@ -4,6 +4,7 @@ import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import screen from "@/public/screen.png";
 
 export default async function Home() {
   const valid = await isAuthenticated();
@@ -211,12 +212,12 @@ export default async function Home() {
       <section className="flex flex-col items-center justify-center gap-8">
         <h2 className="text-2xl font-bold">Why SubTrack?</h2>
         <Image
-          src="https://placehold.co/1280x720"
-          alt="Placeholder"
+          src={screen}
+          alt="screenshot"
           unoptimized
           width={1280}
           height={720}
-          className="rounded-md w-[80%] h-auto"
+          className="rounded-md w-[80%] h-auto  shadow-xl shadow-[rgba(0,0,0,1)]"
         />
         <h1 className="text-4xl font-bold">
           Stay <span className="text-primary font-italic">organized,</span> save{" "}
