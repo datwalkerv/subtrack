@@ -1,5 +1,4 @@
 import { checkSettings } from "@/actions/settingsActions";
-import { getSubscriptions } from "@/actions/subscriptionsActions";
 import DashboardHeader from "@/components/shared/Header";
 import SpendingByCategoryChart from "@/components/shared/pieChart";
 import EuroTrendChart from "@/components/shared/trendChart";
@@ -25,12 +24,11 @@ export default async function Dashboard() {
   }
 
   function formatNumber(value: number | string): string {
-  if (value == null || isNaN(Number(value))) return "0";
-  return Math.round(Number(value))
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
+    if (value == null || isNaN(Number(value))) return "0";
+    return Math.round(Number(value))
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
   return (
     <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
       <DashboardHeader />
@@ -66,7 +64,9 @@ export default async function Dashboard() {
             <div className="font-medium text-white/80">
               Active subscriptions
             </div>
-            <div className="text-xl font-bold text-white">{stats.activeCount}</div>
+            <div className="text-xl font-bold text-white">
+              {stats.activeCount}
+            </div>
             <div className="text-sm text-white/50">
               {stats.addedThisMonthCount} added this month
             </div>
@@ -260,16 +260,42 @@ export default async function Dashboard() {
         <div className="text-lg font-semibold text-white/80">
           Upcoming renewals
         </div>
-        <div className="flex items-center justify-between hover:bg-white/5 p-2 rounded-lg transition-colors">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-            <div className="font-medium text-white">subscription 1</div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-white/50">30 days</div>
-            <div className="font-semibold text-white">$0.00</div>
-          </div>
-        </div>
+        {stats.renewalsIn30DaysList && stats.renewalsIn30DaysList.length > 0 ? (
+          [...stats.renewalsIn30DaysList]
+            .filter((sub) => sub.nextPaymentDate) // skip null values
+            .map((sub) => {
+              const nextPayment = new Date(sub.nextPaymentDate as string);
+              const daysLeft = Math.ceil(
+                (nextPayment.getTime() - new Date().getTime()) /
+                  (1000 * 60 * 60 * 24)
+              );
+              return { ...sub, daysLeft };
+            })
+            .sort((a, b) => a.daysLeft - b.daysLeft) // sort ascending by days left
+            .map((sub) => (
+              <div
+                key={sub._id}
+                className="flex items-center justify-between hover:bg-white/5 p-2 rounded-lg transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="font-medium text-white">
+                    {sub.name || "Unnamed subscription"}
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-sm text-white/50">
+                    {sub.daysLeft} day{sub.daysLeft !== 1 && "s"}
+                  </div>
+                  <div className="font-semibold text-white">
+                    {Number(sub.cost || 0).toFixed(2)} {stats.currency}
+                  </div>
+                </div>
+              </div>
+            ))
+        ) : (
+          <div className="text-sm text-white/50">No upcoming renewals</div>
+        )}
       </section>
 
       {/* Charts */}

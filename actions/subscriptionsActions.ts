@@ -80,6 +80,7 @@ export async function getSubscriptions() {
       endDate: sub.endDate ? new Date(sub.endDate).toISOString() : null,
       cost: sub.cost ? parseFloat(sub.cost) : null,
       currency: sub.currency || "HUF",
+      name: sub.subscription || "Unnamed subscription",
     }));
 
     return { success: true, data: plainSubscriptions };

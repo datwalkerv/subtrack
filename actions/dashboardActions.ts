@@ -86,33 +86,22 @@ export async function getDashboardStats() {
   const todayMid = normalizeDate(today);
   const in30DaysMid = normalizeDate(in30DaysDate);
 
-  const renewalsIn30Days = subscriptions.reduce((count, sub) => {
-    if (!sub.nextPaymentDate) return count;
+   const renewalsIn30DaysList = subscriptions.filter((sub) => {
+    if (!sub.nextPaymentDate) return false;
     const nextPayment = normalizeDate(new Date(sub.nextPaymentDate));
     const endDate = sub.endDate ? normalizeDate(new Date(sub.endDate)) : null;
-    if (
+    return (
       nextPayment >= todayMid &&
       nextPayment <= in30DaysMid &&
       (!endDate || endDate >= nextPayment)
-    ) {
-      return count + 1;
-    }
-    return count;
-  }, 0);
+    );
+  });
 
-  const renewalsIn30DaysCost = subscriptions.reduce((sum, sub) => {
-    if (!sub.nextPaymentDate || !sub.cost) return sum;
-    const nextPayment = normalizeDate(new Date(sub.nextPaymentDate));
-    const endDate = sub.endDate ? normalizeDate(new Date(sub.endDate)) : null;
-    if (
-      nextPayment >= todayMid &&
-      nextPayment <= in30DaysMid &&
-      (!endDate || endDate >= nextPayment)
-    ) {
-      return sum + Number(sub.cost || 0);
-    }
-    return sum;
-  }, 0);
+  const renewalsIn30Days = renewalsIn30DaysList.length;
+  const renewalsIn30DaysCost = renewalsIn30DaysList.reduce(
+    (sum, sub) => sum + Number(sub.cost || 0),
+    0
+  );
 
   const windowEnd = addMonths(today, 12);
   let yearlyCost = 0;
@@ -153,5 +142,6 @@ export async function getDashboardStats() {
     renewalsIn30Days,
     renewalsIn30DaysCost,
     yearlyCost,
+    renewalsIn30DaysList,
   };
 }
