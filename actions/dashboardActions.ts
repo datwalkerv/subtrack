@@ -131,6 +131,28 @@ export async function getDashboardStats() {
     }
   });
 
+  const categoryMap: Record<string, number> = {};
+  subscriptions.forEach((sub) => {
+    const category = sub.category || "Other";
+    const cost = Number(sub.cost) || 0;
+    categoryMap[category] = (categoryMap[category] || 0) + cost;
+  });
+
+  const spendingByCategory = Object.entries(categoryMap).map(
+    ([name, value]) => ({ name, value })
+  );
+
+  const paymentMap: Record<string, number> = {};
+  subscriptions.forEach((sub) => {
+    const method = sub.paymentMethod || "Other";
+    const cost = Number(sub.cost) || 0;
+    paymentMap[method] = (paymentMap[method] || 0) + cost;
+  });
+
+  const spendingByPaymentMethod = Object.entries(paymentMap).map(
+    ([name, value]) => ({ name, value })
+  );
+
   const currency = subscriptions[0]?.currency || "HUF";
 
   return {
@@ -143,5 +165,7 @@ export async function getDashboardStats() {
     renewalsIn30DaysCost,
     yearlyCost,
     renewalsIn30DaysList,
+    spendingByCategory,
+    spendingByPaymentMethod,
   };
 }

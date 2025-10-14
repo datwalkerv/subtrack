@@ -1,10 +1,10 @@
 import { checkSettings } from "@/actions/settingsActions";
 import DashboardHeader from "@/components/shared/Header";
-import SpendingByCategoryChart from "@/components/shared/pieChart";
 import EuroTrendChart from "@/components/shared/trendChart";
 import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 import { redirect } from "next/navigation";
 import { getDashboardStats } from "@/actions/dashboardActions";
+import SpendingByChart from "@/components/shared/pieChart";
 
 export default async function Dashboard() {
   const valid = await isAuthenticated();
@@ -29,6 +29,7 @@ export default async function Dashboard() {
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
+
   return (
     <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
       <DashboardHeader />
@@ -262,7 +263,7 @@ export default async function Dashboard() {
         </div>
         {stats.renewalsIn30DaysList && stats.renewalsIn30DaysList.length > 0 ? (
           [...stats.renewalsIn30DaysList]
-            .filter((sub) => sub.nextPaymentDate) // skip null values
+            .filter((sub) => sub.nextPaymentDate)
             .map((sub) => {
               const nextPayment = new Date(sub.nextPaymentDate as string);
               const daysLeft = Math.ceil(
@@ -271,7 +272,7 @@ export default async function Dashboard() {
               );
               return { ...sub, daysLeft };
             })
-            .sort((a, b) => a.daysLeft - b.daysLeft) // sort ascending by days left
+            .sort((a, b) => a.daysLeft - b.daysLeft)
             .map((sub) => (
               <div
                 key={sub._id}
@@ -301,16 +302,17 @@ export default async function Dashboard() {
       {/* Charts */}
       <section className="flex w-full justify-between gap-4">
         <div className="w-1/2 bg-white/5 border border-white/10 p-4 rounded-2xl shadow-sm">
-          <div className="text-lg font-semibold text-white/80 mb-4">
-            Spending by Category
-          </div>
-          <SpendingByCategoryChart />
+          <SpendingByChart
+            title="Spending by Category"
+            data={stats.spendingByCategory}
+          />
         </div>
+
         <div className="w-1/2 bg-white/5 border border-white/10 p-4 rounded-2xl shadow-sm">
-          <div className="text-lg font-semibold text-white/80 mb-4">
-            Spending by Payment Method
-          </div>
-          <SpendingByCategoryChart />
+          <SpendingByChart
+            title="Spending by Payment Method"
+            data={stats.spendingByPaymentMethod}
+          />
         </div>
       </section>
 

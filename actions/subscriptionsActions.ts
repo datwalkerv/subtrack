@@ -7,6 +7,7 @@ import {
   notAuthenticatedObject,
 } from "@/lib/auth/auth-functions";
 import { subscriptionSchema } from "@/lib/validation/subscriptionSchema";
+import { ca } from "date-fns/locale";
 import { Currency } from "lucide-react";
 import { ObjectId } from "mongodb";
 
@@ -81,6 +82,11 @@ export async function getSubscriptions() {
       cost: sub.cost ? parseFloat(sub.cost) : null,
       currency: sub.currency || "HUF",
       name: sub.subscription || "Unnamed subscription",
+      category: sub.category || "Other",
+      paymentMethod: sub.paymentMethod || "Other",
+      billingInterval: sub.billingInterval || "monthly",
+      billingPeriod: sub.billingPeriod ? parseInt(sub.billingPeriod) : 1,
+      status: sub.status || "active",
     }));
 
     return { success: true, data: plainSubscriptions };
