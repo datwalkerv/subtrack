@@ -5,6 +5,7 @@ import SpendingByCategoryChart from "@/components/shared/pieChart";
 import EuroTrendChart from "@/components/shared/trendChart";
 import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 import { redirect } from "next/navigation";
+import { getDashboardStats } from "@/actions/dashboardActions";
 
 export default async function Dashboard() {
   const valid = await isAuthenticated();
@@ -16,176 +17,19 @@ export default async function Dashboard() {
   const settings = await checkSettings();
   if (!settings.success) redirect("/onboarding");
 
-  const response = await getSubscriptions();
+  const stats = await getDashboardStats();
 
-  if (!response.success) {
-    console.error("Failed to fetch subscriptions:");
+  if (!stats) {
+    console.error("Failed to fetch dashboard stats:");
     return;
-  }
-
-  const subscriptions = response.data;
-
-  if (subscriptions == null || subscriptions == undefined) {
-    console.error("No subscriptions data received");
-    return;
-  }
-
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-
-  const nextMonthDate = new Date(currentYear, currentMonth + 1, 1);
-  const nextMonth = nextMonthDate.getMonth();
-  const nextMonthYear = nextMonthDate.getFullYear();
-
-  const activeCount = subscriptions.filter((sub) => {
-    const endDate = sub.endDate ? new Date(sub.endDate) : null;
-    return !endDate || endDate > now;
-  }).length;
-
-  const addedThisMonthCount = subscriptions.filter((sub) => {
-    const createdAt = new Date(sub.createdAt);
-    return (
-      createdAt.getMonth() === currentMonth &&
-      createdAt.getFullYear() === currentYear
-    );
-  }).length;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-  const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-  const nextMonthStart = new Date(nextMonthYear, nextMonth, 1);
-  const nextMonthEnd = new Date(nextMonthYear, nextMonth + 1, 0);
-
-  const remainingThisMonth = subscriptions.reduce((sum, sub) => {
-    if (!sub.nextPaymentDate || !sub.cost) return sum;
-    const nextPayment = new Date(sub.nextPaymentDate);
-    const endDate = sub.endDate ? new Date(sub.endDate) : null;
-
-    if (
-      nextPayment >= today &&
-      nextPayment >= currentMonthStart &&
-      nextPayment <= currentMonthEnd &&
-      (!endDate || endDate >= nextPayment)
-    ) {
-      return sum + Number(sub.cost || 0);
-    }
-    return sum;
-  }, 0);
-
-  const remainingNextMonth = subscriptions.reduce((sum, sub) => {
-    if (!sub.nextPaymentDate || !sub.cost) return sum;
-    const nextPayment = new Date(sub.nextPaymentDate);
-    const endDate = sub.endDate ? new Date(sub.endDate) : null;
-
-    if (
-      nextPayment >= today &&
-      nextPayment <= nextMonthEnd &&
-      (!endDate || endDate >= nextPayment)
-    ) {
-      return sum + Number(sub.cost || 0);
-    }
-    return sum;
-  }, 0);
-
-  const in30DaysDate = new Date(today);
-  in30DaysDate.setDate(in30DaysDate.getDate() + 30);
-
-  const normalizeDate = (d: Date) =>
-    new Date(d.getFullYear(), d.getMonth(), d.getDate());
-
-  const todayMid = normalizeDate(today);
-  const in30DaysMid = normalizeDate(in30DaysDate);
-
-  const renewalsIn30Days = subscriptions.reduce((count, sub) => {
-    if (!sub.nextPaymentDate) return count;
-
-    const nextPayment = normalizeDate(new Date(sub.nextPaymentDate));
-    const endDate = sub.endDate ? normalizeDate(new Date(sub.endDate)) : null;
-
-    if (
-      nextPayment >= todayMid &&
-      nextPayment <= in30DaysMid &&
-      (!endDate || endDate >= nextPayment)
-    ) {
-      return count + 1;
-    }
-    return count;
-  }, 0);
-
-  const renewalsIn30DaysCost = subscriptions.reduce((sum, sub) => {
-    if (!sub.nextPaymentDate || !sub.cost) return sum;
-
-    const nextPayment = normalizeDate(new Date(sub.nextPaymentDate));
-    const endDate = sub.endDate ? normalizeDate(new Date(sub.endDate)) : null;
-
-    if (
-      nextPayment >= todayMid &&
-      nextPayment <= in30DaysMid &&
-      (!endDate || endDate >= nextPayment)
-    ) {
-      return sum + Number(sub.cost || 0);
-    }
-    return sum;
-  }, 0);
-
-  const windowEnd = addMonths(today, 12);
-  let yearlyCost = 0;
-
-  subscriptions.forEach((sub) => {
-    if (!sub.nextPaymentDate || !sub.cost) return;
-
-    const endDate = sub.endDate ? new Date(sub.endDate) : null;
-    let paymentDate = new Date(sub.nextPaymentDate);
-
-    let safety = 0;
-    while (paymentDate < today && safety < 24) {
-      paymentDate = addMonths(paymentDate, 1);
-      safety++;
-    }
-
-    safety = 0;
-    while (paymentDate <= windowEnd && safety < 24) {
-      if (!endDate || endDate >= paymentDate) {
-        if (paymentDate >= today && paymentDate <= windowEnd) {
-          yearlyCost += Number(sub.cost || 0);
-        }
-      } else {
-        break;
-      }
-
-      paymentDate = addMonths(paymentDate, 1);
-      safety++;
-    }
-  });
-
-  const currency = subscriptions[0]?.currency || "HUF";
-
-  console.log("Active Subscriptions:", activeCount);
-  console.log("Added This Month:", addedThisMonthCount);
-
-  function addMonths(origDate: Date, months: number) {
-    const d = new Date(origDate);
-    const day = d.getDate();
-    d.setMonth(d.getMonth() + months);
-
-    if (d.getDate() < day) {
-      d.setDate(0);
-    }
-    return d;
   }
 
   function formatNumber(value: number | string): string {
-    if (value == null || isNaN(Number(value))) return "0";
-
-    // Round to nearest integer and format with dots
-    return Math.round(Number(value))
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  }
+  if (value == null || isNaN(Number(value))) return "0";
+  return Math.round(Number(value))
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 
   return (
     <div className="flex flex-col p-8 my-12 gap-8 mx-auto mt-0 mb-auto">
@@ -222,9 +66,9 @@ export default async function Dashboard() {
             <div className="font-medium text-white/80">
               Active subscriptions
             </div>
-            <div className="text-xl font-bold text-white">{activeCount}</div>
+            <div className="text-xl font-bold text-white">{stats.activeCount}</div>
             <div className="text-sm text-white/50">
-              {addedThisMonthCount} added this month
+              {stats.addedThisMonthCount} added this month
             </div>
           </div>
         </div>
@@ -286,12 +130,12 @@ export default async function Dashboard() {
               Remaining this month
             </div>
             <div className="text-xl font-bold text-white">
-              {formatNumber(remainingThisMonth)}
-              {currency}
+              {formatNumber(stats.remainingThisMonth)}
+              {stats.currency}
             </div>
             <div className="text-sm text-white/50">
-              Next month: {formatNumber(remainingNextMonth)}
-              {currency}
+              Next month: {formatNumber(stats.remainingNextMonth)}
+              {stats.currency}
             </div>
           </div>
         </div>
@@ -351,12 +195,12 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Yearly Cost</div>
             <div className="text-xl font-bold text-white">
-              {formatNumber(yearlyCost)}
-              {currency}
+              {formatNumber(stats.yearlyCost)}
+              {stats.currency}
             </div>
             <div className="text-sm text-white/50">
-              AVG: {formatNumber(yearlyCost / 12)}
-              {currency}/month
+              AVG: {formatNumber(stats.yearlyCost / 12)}
+              {stats.currency}/month
             </div>
           </div>
         </div>
@@ -401,11 +245,11 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Renewals in 30 Days</div>
             <div className="text-xl font-bold text-white">
-              {renewalsIn30Days}
+              {stats.renewalsIn30Days}
             </div>
             <div className="text-sm text-white/50">
-              {formatNumber(renewalsIn30DaysCost)}
-              {currency}
+              {formatNumber(stats.renewalsIn30DaysCost)}
+              {stats.currency}
             </div>
           </div>
         </div>
