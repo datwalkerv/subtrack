@@ -32,6 +32,9 @@ export default function SubscriptionCalendar() {
 
   if (!currentMonth) return null;
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const startOfMonth = new Date(
     currentMonth.getFullYear(),
     currentMonth.getMonth(),
@@ -61,11 +64,14 @@ export default function SubscriptionCalendar() {
 
   const totalDue = subscriptions
     .filter((s) => {
-      const date = new Date(s.nextPaymentDate);
-      return (
-        date.getFullYear() === currentMonth.getFullYear() &&
-        date.getMonth() === currentMonth.getMonth()
-      );
+      const payDate = new Date(s.nextPaymentDate);
+      const endDate = s.endDate ? new Date(s.endDate) : null;
+
+      const isActive = !endDate || endDate >= startOfMonth;
+      const isUpcomingOrCurrent =
+        payDate >= today || (startOfMonth > today && payDate >= today);
+
+      return isActive && isUpcomingOrCurrent && payDate <= endOfMonth;
     })
     .reduce((sum, s) => sum + Number(s.cost || 0), 0);
 
@@ -143,8 +149,15 @@ export default function SubscriptionCalendar() {
             );
             const subsToday = subscriptions.filter((s) => {
               const payDate = new Date(s.nextPaymentDate);
-              return payDate.toDateString() === date.toDateString();
+              const endDate = s.endDate ? new Date(s.endDate) : null;
+
+              return (
+                payDate.getDate() === date.getDate() &&
+                (!endDate || endDate >= date) &&
+                date >= today
+              );
             });
+
             const isToday = date.toDateString() === new Date().toDateString();
 
             return (
