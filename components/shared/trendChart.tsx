@@ -24,7 +24,7 @@ const data = [
   { month: "szept. 2026", value: 234 },
 ];
 
-export default function EuroTrendChart() {
+export default function MonthlySpendingTrend() {
   return (
     <div className="w-full">
       <ResponsiveContainer width="100%" height={200}>

@@ -1,6 +1,6 @@
 import { checkSettings } from "@/actions/settingsActions";
 import DashboardHeader from "@/components/shared/Header";
-import EuroTrendChart from "@/components/shared/trendChart";
+import MonthlySpendingTrend from "@/components/shared/trendChart";
 import { getCurrentUser, isAuthenticated } from "@/lib/auth/auth-functions";
 import { redirect } from "next/navigation";
 import { getDashboardStats } from "@/actions/dashboardActions";
@@ -321,7 +321,7 @@ export default async function Dashboard() {
         <div className="text-lg font-semibold text-white/80">
           Monthly Spending Trend
         </div>
-        <EuroTrendChart />
+        <MonthlySpendingTrend />
       </section>
 
       {/* Bottom Summary Cards */}
