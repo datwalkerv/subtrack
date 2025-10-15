@@ -511,7 +511,7 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Latest Subscription</div>
             <div className="text-xl font-bold text-white">
-              {stats.latestSub.name}
+              {stats.latestSub.name || "N/A"}
             </div>
             <div className="text-sm text-white/50">
               Added {formatYMD(stats.latestSub.createdAt || "")}
