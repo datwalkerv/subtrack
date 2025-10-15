@@ -289,7 +289,7 @@ export default async function Dashboard() {
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <div className="font-medium text-white">
-                    {sub.name || "Unnamed subscription"}
+                    {sub?.name || "Unnamed subscription"}
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -383,10 +383,10 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Most cheap (yearly)</div>
             <div className="text-xl font-bold text-white">
-              {stats.mostCheapSub.name || "N/A"}
+              {stats.mostCheapSub?.name || "N/A"}
             </div>
             <div className="text-sm text-white/50">
-              {formatNumber((stats.mostCheapSub.cost || 0) * 12)}
+              {formatNumber((stats.mostCheapSub?.cost || 0) * 12)}
               {stats.currency}/year
             </div>
           </div>
@@ -429,10 +429,10 @@ export default async function Dashboard() {
               Most expensive (Yearly)
             </div>
             <div className="text-xl font-bold text-white">
-              {stats.mostExpensiveSub.name || 'N/A'}
+              {stats.mostExpensiveSub?.name || "N/A"}
             </div>
             <div className="text-sm text-white/50">
-              {formatNumber((stats.mostExpensiveSub.cost || 0) * 12)}
+              {formatNumber((stats.mostExpensiveSub?.cost || 0) * 12)}
               {stats.currency}/year
             </div>
           </div>
@@ -473,10 +473,13 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Oldest Subscription</div>
             <div className="text-xl font-bold text-white">
-              {stats.oldestSub.name || "N/A"}
+              {stats.oldestSub?.name || "N/A"}
             </div>
             <div className="text-sm text-white/50">
-              Since {formatYMD(stats.oldestSub.createdAt || "")}
+              Since{" "}
+              {stats.oldestSub?.createdAt
+                ? formatYMD(stats.oldestSub.createdAt)
+                : "N/A"}
             </div>
           </div>
         </div>
@@ -511,10 +514,10 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Latest Subscription</div>
             <div className="text-xl font-bold text-white">
-              {stats.latestSub.name || "N/A"}
+              {stats.latestSub?.name || "N/A"}
             </div>
             <div className="text-sm text-white/50">
-              Added {formatYMD(stats.latestSub.createdAt || "")}
+              Added {stats.latestSub?.createdAt ? formatYMD(stats.latestSub.createdAt) : "N/A"}
             </div>
           </div>
         </div>
