@@ -383,7 +383,7 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Most cheap (yearly)</div>
             <div className="text-xl font-bold text-white">
-              {stats.mostCheapSub.name}
+              {stats.mostCheapSub.name || "N/A"}
             </div>
             <div className="text-sm text-white/50">
               {formatNumber((stats.mostCheapSub.cost || 0) * 12)}
@@ -429,7 +429,7 @@ export default async function Dashboard() {
               Most expensive (Yearly)
             </div>
             <div className="text-xl font-bold text-white">
-              {stats.mostExpensiveSub.name}
+              {stats.mostExpensiveSub.name || 'N/A'}
             </div>
             <div className="text-sm text-white/50">
               {formatNumber((stats.mostExpensiveSub.cost || 0) * 12)}
@@ -473,10 +473,10 @@ export default async function Dashboard() {
           <div className="flex flex-col">
             <div className="font-medium text-white/80">Oldest Subscription</div>
             <div className="text-xl font-bold text-white">
-              {stats.oldestSub.name}
+              {stats.oldestSub.name || "N/A"}
             </div>
             <div className="text-sm text-white/50">
-              Since {formatYMD(stats.oldestSub.createdAt)}
+              Since {formatYMD(stats.oldestSub.createdAt || "")}
             </div>
           </div>
         </div>
@@ -514,7 +514,7 @@ export default async function Dashboard() {
               {stats.latestSub.name}
             </div>
             <div className="text-sm text-white/50">
-              Added {formatYMD(stats.latestSub.createdAt)}
+              Added {formatYMD(stats.latestSub.createdAt || "")}
             </div>
           </div>
         </div>
