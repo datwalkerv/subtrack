@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+<img height="96px" src="https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/app/favicon.ico" alt="Subtrack" style="border-radius: 100%;box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);" />
 
-First, run the development server:
+# Subtrack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Take control of your subscriptions.**
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Track, manage, and never miss a renewal again. 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[![Home](https://img.shields.io/badge/🏠-thesubtrack.app-blue?style=flat-square)](https://thesubtrack.vercel.app/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen.png)
 
-## Learn More
+</div>
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Why Subtrack?
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Take control of your subscriptions.**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Track, manage, and never miss a renewal again
 
-## Deploy on Vercel
+- ⚡ **Blazing fast** — Built with Next.js and TypeScript for performance and reliability  
+- 📆 **Smart tracking** — Keep tabs on renewals and upcoming payments  
+- 📊 **Insightful overview** — Visualize spending patterns and identify savings opportunities    
+- 🎨 **Modern & minimal UI** — Focus on clarity, not complexity
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 💡 Perfect For
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 💸 **Budget-conscious users** — Stay aware of every subscription and cut unnecessary costs  
+- 🧑‍💻 **Freelancers & creators** — Manage software and service expenses with ease  
+- 🧾 **Small business owners** — Track team tools, SaaS, and renewals effortlessly  
+- 📱 **Power users** — Centralize your subscriptions across platforms  
+- 🎯 **Anyone tired of surprise charges** — Take back control of your recurring payments  
+
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=datwalkerv/subtrack&type=Date)](https://star-history.com/#datwalkerv/subtrack&Date)
+
+---
+
+<div align="center">
+
+**[Website](https://thesubtrack.vercel.app/)** •
+**[Instagram](https://www.instagram.com/balagbalint/)** •
+**[Github](https://github.com/datwalkerv/)**
+
+Made with ❤️
+
+**If you like Subtrack, give it a ⭐ on GitHub!**
+
+</div>
