@@ -39,7 +39,13 @@ Track, manage, and never miss a renewal again
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=datwalkerv/subtrack&type=Date)](https://star-history.com/#datwalkerv/subtrack&Date)
+<a href="https://www.star-history.com/#datwalkerv/subtrack&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=datwalkerv/subtrack&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=datwalkerv/subtrack&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=datwalkerv/subtrack&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ---
 
