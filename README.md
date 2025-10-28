@@ -11,6 +11,8 @@ Track, manage, and never miss a renewal again.
 [![Home](https://img.shields.io/badge/🏠-thesubtrack.app-blue?style=flat-square)](https://thesubtrack.vercel.app/)
 
 ![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen.png)
+![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen2.png)
+![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen3.png)
 
 </div>
 
