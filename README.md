@@ -12,7 +12,6 @@ Track, manage, and never miss a renewal again.
 
 ![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen.png)
 ![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen2.png)
-![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen3.png)
 
 </div>
 
@@ -34,6 +33,8 @@ Track, manage, and never miss a renewal again
 - 🧾 **Small business owners** — Track team tools, SaaS, and renewals effortlessly  
 - 📱 **Power users** — Centralize your subscriptions across platforms  
 - 🎯 **Anyone tired of surprise charges** — Take back control of your recurring payments  
+
+![Screenshot](https://raw.githubusercontent.com/datwalkerv/subtrack/refs/heads/main/public/screen3.png)
 
 
 ## ⭐ Star History
